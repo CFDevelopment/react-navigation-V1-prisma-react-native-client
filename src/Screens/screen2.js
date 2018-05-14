@@ -9,6 +9,7 @@ export default class Screen2 extends Component {
     return (
       <View style={{ flex: 1, backgroundColor: "powderblue" }}>
         <Text>{this.props.navigation.state.params.name}</Text>
+        <Text> Gucci </Text>
       </View>
     );
   }

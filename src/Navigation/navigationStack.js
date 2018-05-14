@@ -1,6 +1,6 @@
 import { StackNavigator } from "react-navigation";
-import Screen1 from "../Components/screen1";
-import Screen2 from "../Components/screen2";
+import Screen1 from "../Screens/screen1";
+import Screen2 from "../Screens/screen2";
 
 const navigator = StackNavigator({
   screen1: {
