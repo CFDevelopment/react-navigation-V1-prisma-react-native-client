@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import {
   Text,
   View,
@@ -37,7 +37,7 @@ const defaultState = {
   isSubmitting: false,
 }
 
-class TextField extends Component {
+class TextField extends PureComponent {
   onChangeText = (text) => {
     const { onChangeText, name } = this.props;
     onChangeText(name, text);

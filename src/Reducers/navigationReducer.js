@@ -1,6 +1,6 @@
 import AppNavigator from "../Navigation/navigationStack";
 const initialState = AppNavigator.router.getStateForAction(
-  AppNavigator.router.getActionForPathAndParams("Register")
+  AppNavigator.router.getActionForPathAndParams("Login")
 );
 const navigationReducer = (state = initialState, action) => {
   const newState = AppNavigator.router.getStateForAction(action, state);
