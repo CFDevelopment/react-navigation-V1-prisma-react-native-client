@@ -1,13 +1,13 @@
 import { StackNavigator } from "react-navigation";
-import Screen1 from "../Screens/screen1";
-import Screen2 from "../Screens/screen2";
+import Login from "../Screens/Setup/Login";
+import Register from "../Screens/Setup/Register";
 
 const navigator = StackNavigator({
-  screen1: {
-    screen: Screen1
+  Login: {
+    screen: Login
   },
-  screen2: {
-    screen: Screen2
+  Register: {
+    screen: Register
   }
 });
 
