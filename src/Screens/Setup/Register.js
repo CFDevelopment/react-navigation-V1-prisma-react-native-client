@@ -9,9 +9,10 @@ import {
   Platform,
   SafeAreaView,
   TouchableWithoutFeedback,
-  Alert
+  Alert,
+  AsyncStorage
 } from "react-native";
-
+import { NavigationActions } from 'react-navigation';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -36,9 +37,39 @@ const defaultState = {
   isSubmitting: false,
 }
 
-class Register extends Component {
+class TextField extends Component {
+  onChangeText = (text) => {
+    const { onChangeText, name } = this.props;
+    onChangeText(name, text);
+  };
+  render() {
+    const { value, secureTextEntry, name } = this.props;
+    return (
+      <TextInput
+        onChangeText={this.onChangeText}
+        value={value}
+        style={styles.field}
+        autoCapitalize="none"
+        autoComplete="off"
+        placeholder={name}
+        secureTextEntry={!!secureTextEntry}
+      />
+    );
+  }
+}
 
+class Register extends Component {
   state = defaultState;
+
+  navigateProducts = () => {
+    const navigateToProducts = NavigationActions.navigate({ routeName: 'Products' });
+    this.props.navigation.dispatch(navigateToProducts);
+  };
+
+  navigateLogin = () => {
+    const navigateToLogin = NavigationActions.navigate({ routeName: 'Login' });
+    this.props.navigation.dispatch(navigateToLogin);
+  };
 
   onChangeText = (key, value) => {
     this.setState(state => ({
@@ -51,10 +82,8 @@ class Register extends Component {
 
   submit = async () => {
     if (this.state.isSubmitting) { return; }
-
     this.setState({ isSubmitting: true });
     let response;
-
     try {
       response = await this.props.mutate({
         variables: this.state.values,
@@ -68,23 +97,13 @@ class Register extends Component {
       });
       return;
     }
-
-    Alert.alert(
-      response.data.signup.token,
-      'My Alert Msg',
-      [
-
-      ],
-      { cancelable: false }
-    )
-    // console.log("hey")
-    // console.log(response.data.signup.token);
+    AsyncStorage.setItem("@platform/token", response.data.signup.token)
+    //write function to cleear inputs
     this.setState({ defaultState });
+    this.navigateProducts();
   };
 
-
   render() {
-
     const { errors, values: { name, email, password } } = this.state;
 
     return (
@@ -95,30 +114,17 @@ class Register extends Component {
         alignItems: 'center'
       }}>
         <View style={{ width: 200 }}>
-          <TextInput
-            onChangeText={text => this.onChangeText('name', text)}
-            value={name} style={styles.field}
-            autoCapitalize="none"
-            autoComplete="off"
-            placeholder="name" />
-
+          <TextField value={name} name="name" onChangeText={this.onChangeText} />
           {errors.email && <Text> {errors.email} </Text>}
-          <TextInput
-            onChangeText={text => this.onChangeText('email', text)}
-            value={email} style={styles.field}
-            autoCapitalize="none"
-            autoComplete="off"
-            placeholder="email" />
-          <TextInput
-            onChangeText={text => this.onChangeText('password', text)}
-            value={password} style={styles.field}
-            placeholder="password"
-            autoCapitalize="none"
-            autoComplete="off"
-            secureTextEntry />
+          <TextField value={email} name="email" onChangeText={this.onChangeText} />
+          <TextField value={password} name="password" onChangeText={this.onChangeText} secureTextEntry />
           <Button
             title="Create Account"
             onPress={this.submit} />
+          <Text> or </Text>
+          <Button
+            title="Login"
+            onPress={this.navigateLogin} />
         </View>
       </View>
     );
