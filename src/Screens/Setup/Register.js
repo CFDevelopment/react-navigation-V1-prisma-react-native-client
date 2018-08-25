@@ -8,7 +8,8 @@ import {
   Keyboard,
   Platform,
   SafeAreaView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Alert
 } from "react-native";
 
 import { graphql } from 'react-apollo';
@@ -25,17 +26,19 @@ const styles = StyleSheet.create({
   },
 });
 
+const defaultState = {
+  values: {
+    name: "",
+    email: "",
+    password: ""
+  },
+  errors: {},
+  isSubmitting: false,
+}
+
 class Register extends Component {
 
-  state = {
-    values: {
-      name: "",
-      email: "",
-      password: ""
-    },
-    errors: {},
-    isSubmitting: false,
-  };
+  state = defaultState;
 
   onChangeText = (key, value) => {
     this.setState(state => ({
@@ -48,6 +51,7 @@ class Register extends Component {
 
   submit = async () => {
     if (this.state.isSubmitting) { return; }
+
     this.setState({ isSubmitting: true });
     let response;
 
@@ -56,17 +60,32 @@ class Register extends Component {
         variables: this.state.values,
       });
     } catch (err) {
-      console.log(err);
+      this.setState({
+        errors: {
+          email: 'Already Taken',
+        },
+        isSubmitting: false,
+      });
+      return;
     }
 
-    console.log(response);
-    this.setState({ isSubmitting: false });
+    Alert.alert(
+      response.data.signup.token,
+      'My Alert Msg',
+      [
+
+      ],
+      { cancelable: false }
+    )
+    // console.log("hey")
+    // console.log(response.data.signup.token);
+    this.setState({ defaultState });
   };
 
 
   render() {
 
-    const { values: { name, email, password } } = this.state;
+    const { errors, values: { name, email, password } } = this.state;
 
     return (
       <View style={{
@@ -80,17 +99,22 @@ class Register extends Component {
             onChangeText={text => this.onChangeText('name', text)}
             value={name} style={styles.field}
             autoCapitalize="none"
+            autoComplete="off"
             placeholder="name" />
+
+          {errors.email && <Text> {errors.email} </Text>}
           <TextInput
             onChangeText={text => this.onChangeText('email', text)}
             value={email} style={styles.field}
             autoCapitalize="none"
+            autoComplete="off"
             placeholder="email" />
           <TextInput
             onChangeText={text => this.onChangeText('password', text)}
             value={password} style={styles.field}
             placeholder="password"
             autoCapitalize="none"
+            autoComplete="off"
             secureTextEntry />
           <Button
             title="Create Account"
