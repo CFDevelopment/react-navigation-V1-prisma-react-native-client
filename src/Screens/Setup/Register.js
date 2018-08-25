@@ -15,51 +15,18 @@ import {
 import { NavigationActions } from 'react-navigation';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-
-const styles = StyleSheet.create({
-  field: {
-    fontSize: 20,
-    marginBottom: 15,
-    height: 40
-  },
-  safeAreaView: {
-    flex: 1
-  },
-});
-
-const defaultState = {
-  values: {
-    name: "",
-    email: "",
-    password: ""
-  },
-  errors: {},
-  isSubmitting: false,
-}
-
-class TextField extends PureComponent {
-  onChangeText = (text) => {
-    const { onChangeText, name } = this.props;
-    onChangeText(name, text);
-  };
-  render() {
-    const { value, secureTextEntry, name } = this.props;
-    return (
-      <TextInput
-        onChangeText={this.onChangeText}
-        value={value}
-        style={styles.field}
-        autoCapitalize="none"
-        autoComplete="off"
-        placeholder={name}
-        secureTextEntry={!!secureTextEntry}
-      />
-    );
-  }
-}
+import TextField from '../../components/TextField';
 
 class Register extends Component {
-  state = defaultState;
+  state = {
+    values: {
+      name: "",
+      email: "",
+      password: ""
+    },
+    errors: {},
+    isSubmitting: false,
+  }
 
   navigateProducts = () => {
     const navigateToProducts = NavigationActions.navigate({ routeName: 'Products' });
@@ -99,7 +66,7 @@ class Register extends Component {
     }
     AsyncStorage.setItem("@platform/token", response.data.signup.token)
     //write function to cleear inputs
-    this.setState({ defaultState });
+    //this.setState({ defaultState });
     this.navigateProducts();
   };
 
